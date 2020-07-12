@@ -1,0 +1,86 @@
+# properties of the set of representative periods
+number_days_total: 365
+number_days: 6
+used_resolution: 1 # 0.25 1 2 4 => The resolution used when selecting days/weeks, this does not necessarily mean that this resolution is used in the UC/GEP model (although the resolution used to select days/weeks is best taken equal to the planned resolution of the UC/GEP model)
+resolution_approach: 'average' # 'average' or 'sparse'
+
+# properties of the optimization procedure
+number_bins: 40
+correlation_method: 'none' # 'all_not_used' #'all' # none
+dynamics_method: 'none' # 'all_1step_not_used' # 'all_1step' #
+optimization: 'selecting_repr_periods' # gams file to be used
+area_error_tolerance: 1 # optional
+
+equal_weights: false
+
+solver:
+  Method: optimization
+  mip: 'Gurobi'
+  ResLim: 100
+  Threads: 3
+
+gams_parameter:
+    OptCr: 0.005
+    ResLim: 100
+    mip: 'CPLEX'
+    Threads: 3
+
+# result processing options
+save_results: True
+result_dir: 'results/BE_test'
+create_plots: 1 # 0, 1
+calc_dynamics: True
+calc_correlation: True
+
+# properties of the time series that needs to be approximated
+original_resolution: 1.0 # resolution of the data in the .csv file(s). Note: it is expected here that all time series are provided in the same resolution
+rel_path_to_csv_file: '../input_data/'
+time_series:
+    - name: 'DEM_BE_Z'
+      region: 'BE'
+      type: 'basic'
+      source:
+        csv: './input_data/BE2015Load.csv' #only the name of the CSV file, the path to the csv file is in rel_path_to_csv_file
+        start: '2015-01-01'
+        end: '2015-12-31 23:59:59'
+        column: 'AvgOfRealTime'
+        index_column: 'Timestep'
+        delimiter: ';'
+      weight: 1
+      mandatory_periods: [max, min]
+
+    - name: 'PV_BE_Z'
+      region: 'BE'
+      type: 'basic'
+      source:
+        csv: './input_data/BE2015Sun.csv' #only the name of the CSV file, the path to the csv file is in rel_path_to_csv_file
+        start: '2015-01-01'
+        end: '2015-12-31 23:59:59'
+        column: 'capacity_factor'
+        index_column: 'Timestep'
+        delimiter: ';'
+      weight: 1
+
+    - name: 'WIND_ONSHORE_BE_Z'
+      region: 'BE'
+      type: 'basic'
+      source:
+        csv: './input_data/BE2015Onshore.csv' #only the name of the CSV file, the path to the csv file is in rel_path_to_csv_file
+        start: '2015-01-01'
+        end: '2015-12-31 23:59:59'
+        column: 'capacity_factor'
+        index_column: 'Timestep'
+        delimiter: ';'
+      weight: 1
+
+    - name: 'WIND_OFFSHORE_BE_Z'
+      region: 'BE'
+      type: 'basic'
+      source:
+        csv: './input_data/BE2015Offshore.csv' #only the name of the CSV file, the path to the csv file is in rel_path_to_csv_file
+        start: '2015-01-01'
+        end: '2015-12-31 23:59:59'
+        column: 'capacity_factor'
+        index_column: 'Timestep'
+        delimiter: ';'
+      weight: 1
